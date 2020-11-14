@@ -12,6 +12,7 @@
 
 	<!-- Theme used for syntax highlighted code -->
 	<link rel="stylesheet" href="plugin/highlight/monokai.css" id="highlight-theme">
+
 </head>
 <body>
 	<!--
@@ -62,7 +63,7 @@
 			<section>
 				<h3>RNN problems</h3>
 				<ul>
-					<li>Not parralizable within a sequence - RNNs process tokens sequentially</li>
+					<li>Not parallelizable within a sequence - RNNs process tokens sequentially</li>
 					<li>Problems with (very) long dependencies</li>
 					<li>Vanishing/exploding gradients</li>
 					<li>Computationally expensive to train</li>
@@ -72,7 +73,7 @@
 			<section>
 				<h3>Vanilla Transformer</h3>
 				<div style="display: inline-grid; grid-template-columns: 50% 50%;margin-left: 0%; margin-right: 0%;">
-                    <div style="height: 90%; margin-bottom: 0%;">
+                    <div style="height: 85%; margin-bottom: 0%;">
                         <img src="assets/vanilla_transformer.png">
                     </div>
                     <div>
@@ -89,13 +90,35 @@
 			</section>
 
 			<section>
-				<h3>Self-Attention - foundation of transformer architecture</h3>
+				<section>	
+					<h3>Self-Attention - basic example</h3>
+					<p>
+						We are transforming $x_1, x_2,..., x_t$ input vectors into corrseponding  output vectors $y_1, y_2,..., y_t$.
+						Here $y_i$ is simply weighed avereage over all input vectors.
+					</p>
+					<div style="display: inline-grid; grid-template-columns: 65% 35%; margin-left: 0%; margin-right: 0%;">
+						<div style="height: 120%; margin-right: 0%;">
+							<img src="assets/self-attention-idea.svg">
+						</div>
+						<div>
+							<p>
+								$y_i = \sum_{j} w_{ij}x_j$ <br><br>
+								$w'_{ij} = x_{i}^{T}x_j$ <br><br>
+								$w_{ij} = \frac{exp (w'_{ij})}{\sum_j exp (w'_{ij})}$
+							</p>
+						</div>
+					</div>
+				</section>
 
+				<section>
+					<h3>Self-Attention - transformers</h3>
+				</section>
 			</section>
 			
 		</div>
 	</div>
-
+	
+	<script src="plugin/math/math.js"></script>
 	<script src="dist/reveal.js"></script>
 	<script src="plugin/notes/notes.js"></script>
 	<script src="plugin/markdown/markdown.js"></script>
@@ -108,7 +131,7 @@
 			hash: true,
 
 			// Learn about plugins: https://revealjs.com/plugins/
-			plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+			plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath  ]
 		});
 	</script>
 </body>
