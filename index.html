@@ -51,7 +51,7 @@
 					<li class = "fragment">The problem with RNNs (quick recap)</li>
 					<li class = "fragment">Quick look at Vanilla Transformer - "Attention is All You Need" paper</li>
 					<li class = "fragment">Vanilla Transformer - architecture breakdown</li>
-					<li class = "fragment">Architecture examples</li>
+					<li class = "fragment">Examples of architectures</li>
 				</ol>
 			</section>
 
@@ -93,7 +93,7 @@
 				<section>	
 					<h3>Self-Attention - basic example</h3>
 					<p>
-						We are transforming $x_1, x_2,..., x_t$ input vectors into corrseponding  output vectors $y_1, y_2,..., y_t$.
+						We are transforming input vectors $x_1, x_2,..., x_t$ into corrseponding  output vectors $y_1, y_2,..., y_t$.
 						Here $y_i$ is simply weighed avereage over all input vectors.
 					</p>
 					<div style="display: inline-grid; grid-template-columns: 65% 35%; margin-left: 0%; margin-right: 0%;">
@@ -104,15 +104,88 @@
 							<p>
 								$y_i = \sum_{j} w_{ij}x_j$ <br><br>
 								$w'_{ij} = x_{i}^{T}x_j$ <br><br>
-								$w_{ij} = \frac{exp (w'_{ij})}{\sum_j exp (w'_{ij})}$
+								$w_{ij} = \text{softmax}(w'_{ij})$
 							</p>
 						</div>
 					</div>
 				</section>
 
 				<section>
-					<h3>Self-Attention - transformers</h3>
+					<h3>Self-Attention - key, value, query</h3>
+					<p style="text-align: left">
+						From each input vector $x_i$ we derive three new vectors called $key, value$ and $query$. <br>					
+					</p>
+					<div style="display: inline-grid; grid-template-columns: 60% 40%; margin-left: 0%; margin-right: 0%;">
+						<div style="height: 100%; margin-right: 0%;">
+							<img src="assets/key-query-value.svg">
+						</div>
+						<div>
+							$k_i = W_kx_i$ <br> $v_i = W_vx_i$ <br> $q_i = W_qx_i$ <br><br>
+							$y_i = \sum_{j} w_{ij}x_j$ <br><br>
+							$w'_{ij} = q_{i}^{T}k_j$ <br>
+							$w_{ij} = \text{softmax}(w'_{ij})$
+						</div>
+					</div>
 				</section>
+
+				<section>
+					<h3>Self-Attention - Scaling dot product</h3>
+					<p>
+						The next trick is to scale our dot product by $\frac{1}{\sqrt{d_k}}$, where $d_k$ is the length of 
+						our embedding vector. 
+					</p><br>
+					$y_i = \sum_{j} w_{ij}x_j$ <br>
+					$w'_{ij} = \frac{q_{i}^{T}k_j}{\sqrt{d_k}}$ <br>
+					$w_{ij} = \text{softmax}(w'_{ij})$
+				</section>
+
+				<section>
+					<h3>Scaled Dot-Product Attention</h3>
+					<p>
+						$\text{Attention}(Q, K, V) = \text{softmax}(\frac{QK^T}{\sqrt{d_k}})V$ 
+					</p>
+					<div style="display: inline-grid; grid-template-columns: 65% 35%; margin-left: 0%; margin-right: 0%;">
+						<div>
+							<p>
+								Keys, values and queries are packed into matrices $K, V, Q$, which 
+								enables the attention function to be computed simultaneously over set of queries.
+							</p>
+						</div>
+						<div style="height: 100%; margin-right: 0%;">
+							<img src="assets/scaled-dotprod-attention.png">
+						</div>
+					</div>
+				</section>
+
+				<section>
+					<h2>Scaled Dot-Product Attention</h2>
+					<p>
+						$\text{Attention}(Q, K, V) = \text{softmax}(\frac{QK^T}{\sqrt{d_k}})V$ 
+					</p>
+					<pre data-id="code-animation"><code class="python" data-trim data-line-numbers="1-8|10|11-13|14-15|16">
+class SelfAttention(nn.Module):
+  def __init__(self, emb_dim):
+	super().__init__()	
+	self.emb_dim = emb_dim
+
+	self.tokeys = nn.Linear(emb_dim, emb_dim, bias=False)
+	self.toqueries = nn.Linear(emb_dim, emb_dim, bias=False)
+	self.tovalues = nn.Linear(emb_dim, emb_dim, bias=False)	
+  def forward(self, x):
+	b, t, dk = x.size()
+	queries = self.toqueries(x)
+	keys    = self.tokeys(x)
+	values  = self.tovalues(x)		
+	dot = torch.einsum("bqe,bke -> bqk", [queries, keys])
+	softmaxed = torch.softmax(dot / (dk ** (1/2)), dim = 2)
+	out = torch.einsum("bqk, bke -> bqe", [softmaxed, values])	
+	return out					
+					</code></pre>
+				</section>
+			</section>
+
+			<section>
+				<h3>What about the "Multi-head" thing?</h3>
 			</section>
 			
 		</div>
