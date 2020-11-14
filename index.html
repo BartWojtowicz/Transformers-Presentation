@@ -30,9 +30,66 @@
 	<div class="reveal">
 		<div class="slides">
 			<section>
-				<h2>Transformers</h2>
+				<h2>Transformer</h2>
 				<p>An overview of architecture</p>
 				<small>Bartosz Wójtowicz</small>
+			</section>
+
+			<section>
+				<h2>Prerequisites</h2>
+				<ul>
+					<li class="fragment">You know how Neural Networks work</li>
+					<li class="fragment">Basic knowledge of PyTorch</li>
+					<li class="fragment">(optional) Basic understanding of attention mechanism</li>
+				</ul>
+			</section>
+
+			<section data-auto-animate>
+				<h2 data-id='code-title'>Presentation outline</h2>
+				<ol>
+					<li class = "fragment">The problem with RNNs (recap)</li>
+					<li class = "fragment">Quick look at Vanilla Transformer - Attention is All You Need paper</li>
+					<li class = "fragment">Building blocks of the vanilla transformer</li>
+					<li class = "fragment">Encoder-only architectures</li>
+				</ol>
+			</section>
+
+			<section>
+				<h3>The problem with RNNs (recap)</h3>
+				<img src = "assets/recurrent-connection.svg" style="height: 10%;">
+			</section>
+
+			<section>
+				<h3>RNN problems</h3>
+				<ul>
+					<li>Not parralizable within a sequence - RNNs process tokens sequentially</li>
+					<li>Problems with (very) long dependencies</li>
+					<li>Vanishing/exploding gradients - biased by recent input</li>
+					<li>Computationally expensive to train</li>
+				</ul>
+			</section>
+
+			<section>
+				<h3>Vanilla Transformer</h3>
+				<div style="display: inline-grid; grid-template-columns: 50% 50%;margin-left: 0%; margin-right: 0%;">
+                    <div style="height: 90%; margin-bottom: 0%;">
+                        <img src="assets/vanilla_transformer.png">
+                    </div>
+                    <div>
+						<p>We'll break it down into:</p>
+						<ol>
+							<li class = "fragment">Self-Attention</li>
+							<li class = "fragment">Multi-Head Attention</li>
+							<li class = "fragment">Position encodings and embeddings</li>
+							<li class = "fragment">Encoder Block</li>
+							<li class = "fragment">Decoder Block</li>
+						</ol>
+                    </div>
+                </div>
+			</section>
+
+			<section>
+				<h2></h2>
 			</section>
 			
 		</div>
