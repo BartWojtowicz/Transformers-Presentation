@@ -237,8 +237,92 @@ class MultiHeadSelfAttention(nn.Module):
 					</pre>
 				</section>
 			</section>
-			
-		</div>
+
+			<section>
+				<section>
+					<h3>Position information</h3>
+					<p class="fragment">
+						Each layer in our model is permutation invariant (no recurrence, no convolution).
+						If we change the order of words in a sentence, we get the exact same output.
+					</p>
+					<p class="fragment">We want out model to make use of the order of the sequence.</p>
+				</section>
+
+				<section>
+					<h3>Positional Embedding</h3>
+					<!-- <p>We simply embed the positions exactly the same way as words.</p> -->
+					<p class="fragment">
+						Just as we create (learnable) embeddings $v_{\text{cat}}, v_{\text{dog}}$ for words,
+						we also create embeddings $v_{1},...,v_{m}$ for each position in a sentence.
+					</p>
+					<br>
+					<p class="fragment">+ easy to implement, works well</p>
+					<p class="fragment">- need sequences of every length during training</p>				
+				</section>
+
+				<section>
+					<h3>Positional Encoding</h3>
+					<p class="fragment">
+						We use function $f: N \to \mathbb{R}^K$ (usually a combination of $sin$ and $cos$ functions) to create positional embedding for different positions.
+					</p>
+					<br>
+					<p class="fragment">+ works just as well as embeddings</p>
+					<p class="fragment">+ deals with sequences longer than in training</p>
+					<p class="fragment">- a little harder to implement</p>
+					<p class="fragment">- choice of encoding functions can be hard</p>
+				</section>
+			</section>
+
+			<section>
+				<section>
+					<h3>Encoder Block</h3>
+					<div style="display: inline-grid; grid-template-columns: 60% 40%; margin-left: 0%; margin-right: 0%;">
+						<div>
+							<ul><br>
+								<li class="fragment">Multi-Head Self-Attention</li>
+								<li class="fragment">Feed Forward layer - single FC NN applied independently to each vector</li>
+								<li class="fragment">Residual connections (added before normalization)</li>
+								<li class="fragment">Layer normalization layers</li>
+							</ul>
+						</div>
+						<div style="height: 80%; margin-right: 0%;">
+							<img src="assets/encoder.png">
+						</div>
+					</div>
+				</section>
+
+				<section>
+					<h3>Let's see it in code!</h3>
+				</section>
+
+				<section>
+					<h2>Encoder code</h2>
+					<pre data-id="code-animation">
+						<code class="python" data-trim data-line-numbers="1-4|5|6-7|8-13|14|15|16|17|18">
+class Encoder(nn.Module):
+
+    def __init__(self, emb, heads, hidden_multiplier = 4):
+        super().__init__()
+        self.attention = MultiHeadSelfAttention(emb, heads=heads)
+        self.norm1 = nn.LayerNorm(emb)
+        self.norm2 = nn.LayerNorm(emb)
+        self.ff = nn.Sequential(
+            nn.Linear(emb, hidden_multiplier * emb),
+            nn.ReLU(),
+            nn.Linear(hidden_multiplier * emb, emb)
+            )
+
+    def forward(self, x): 
+        attended = self.attention(x)
+        x = self.norm1(attended + x)
+        forwarded = self.ff(x)
+        return self.norm2(forwarded + x)
+						</code>
+					</pre>
+				</section>
+
+			</section>
+			</div>
 	</div>
 	
 	<script src="plugin/math/math.js"></script>
