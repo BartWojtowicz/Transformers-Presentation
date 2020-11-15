@@ -176,16 +176,66 @@ class SelfAttention(nn.Module):
 	queries = self.toqueries(x)
 	keys    = self.tokeys(x)
 	values  = self.tovalues(x)		
-	dot = torch.einsum("bqe,bke -> bqk", [queries, keys])
+	dot = torch.einsum("bqe, bke -> bqk", [queries, keys])
 	softmaxed = torch.softmax(dot / (dk ** (1/2)), dim = 2)
 	out = torch.einsum("bqk, bke -> bqe", [softmaxed, values])	
 	return out					
 					</code></pre>
 				</section>
 			</section>
-
+			
 			<section>
-				<h3>What about the "Multi-head" thing?</h3>
+				<section>
+					<h3>Multi-Head Attention</h3>
+					<p class = "fragment">We just stack several "Scaled Dot-Product Attention" :)</p>
+					<p class = "fragment" style="text-align: center">
+						Each attention mechanism (indexed by $h$) with different $W_{k}^{h}$, $W_{v}^{h}$, $W^s_{h}$ matrices. 
+					</p>
+					<p class = "fragment" style="text-align: center">
+						For input $x_i$, we produce different output vector $y_i^s$ for each head. 
+					</p>
+					<p class = "fragment" style="text-align: center">
+						We concatenate vectors $y_i^s$ and transform them linearly back to expected dimension.
+					</p>
+				</section>
+
+				<section>
+					<h3>Multi-Head Attention</h3>
+					<p>	
+						$$\text{MultiHead}(X) = \text{Concat}(\text{head}_1, \text{head}_2,..., \text{head}_h)W_o$$
+						$$\text{head}_i = Attention(Q^i, K^i, V^i) $$
+						$ Q^i = XW_q^i $ <br> $ K^i = XW_k^i $ <br> $ V^i = XW_v^i $
+					</p>
+				</section>
+
+				<section>
+					<h3>Multi-Head Attention</h3>
+					<pre data-id="code-animation">
+						<code class="python" data-trim data-line-numbers="1-10|11|12-14|15-17|18-19|20|21">
+class MultiHeadSelfAttention(nn.Module):
+  def __init__(self, emb_dim, heads = 8):
+	super().__init__()	
+	self.emb_dim = emb_dim
+	self.heads = heads
+	
+	# we combine all heads into single linear transformation
+	self.tokeys = nn.Linear(emb_dim, emb_dim * 8, bias=False)
+	self.toqueries = nn.Linear(emb_dim, emb_dim * 8, bias=False)
+	self.tovalues = nn.Linear(emb_dim, emb_dim * 8 , bias=False)
+	self.unifyheads = nn.Linear(emb_dim * 8, emb_dim)	
+  def forward(self, x):
+	b, t, dk = x.size()
+	h = self.heads
+	queries = self.toqueries(x).view(b, t, h, dk)
+	keys    = self.tokeys(x).view(b, t, h, dk)
+	values  = self.tovalues(x).view(b, t, h, dk)	
+	dot = torch.einsum("bqhe,bkhe -> bhqk", [queries, keys])
+	softmaxed = torch.softmax(dot / (dk ** (1/2)), dim = 3)
+	out = torch.einsum("bhqk, bkhe -> bqhe", [softmaxed, values])	
+	return self.unifyheads(out)
+						</code>
+					</pre>
+				</section>
 			</section>
 			
 		</div>
