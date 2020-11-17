@@ -15,19 +15,6 @@
 
 </head>
 <body>
-	<!--
-	The plan:
-		1. The problem with RNNs (reminder)
-		2. First look at vanilla transformer
-		3. Self Attention
-		4. Transformer Block
-		5. Attention is all you need vanilla transformer
-		6. Encoder only 
-		7. Examples
-			7.1 Basic classification
-			7.2 Bert 
-	-->
-
 	<div class="reveal">
 		<div class="slides">
 			<section>
@@ -45,18 +32,8 @@
 				</ul>
 			</section>
 
-			<section data-auto-animate>
-				<h2 data-id='code-title'>Presentation outline</h2>
-				<ol>
-					<li class = "fragment">The problem with RNNs (quick recap)</li>
-					<li class = "fragment">Quick look at Vanilla Transformer - "Attention is All You Need" paper</li>
-					<li class = "fragment">Vanilla Transformer - architecture breakdown</li>
-					<li class = "fragment">Examples of architectures</li>
-				</ol>
-			</section>
-
 			<section>
-				<h3>The problem with RNNs</h3>
+				<h3>The problem with RNNs (Recap)</h3>
 				<img src = "assets/recurrent-connection.svg" style="height: 10%;">
 			</section>
 
@@ -71,32 +48,45 @@
 			</section>
 
 			<section>
-				<h3>Vanilla Transformer</h3>
-				<div style="display: inline-grid; grid-template-columns: 50% 50%;margin-left: 0%; margin-right: 0%;">
-                    <div style="height: 85%; margin-bottom: 0%;">
-                        <img src="assets/vanilla_transformer.png">
-                    </div>
-                    <div>
-						<p>We'll break it down into:</p>
-						<ol>
-							<li class = "fragment">Self-Attention</li>
-							<li class = "fragment">Multi-Head Attention</li>
-							<li class = "fragment">Position encodings and embeddings</li>
-							<li class = "fragment">Encoder Block</li>
-							<li class = "fragment">Decoder Block</li>
-						</ol>
-                    </div>
+				<h3>Vanilla Transformer - Quick Look</h3>
+				<div style="display: inline-grid; grid-template-columns: 40% 60%;margin-left: 0%; margin-right: 0%;">
+					<div style="height: 100%; margin-bottom: 0%;">
+						<img src="assets/vanilla_transformer.png">
+					</div>
+					<div>
+						<ul>
+							<li class = "fragment">Encoder - maps input sequence into a latent representation (memory) of the whole sequence.</li><br>
+							<li class = "fragment">Decoder - generates output based on memory and words already generated. </li>
+						</ul>
+					</div>
                 </div>
+			</section>
+
+			<section>
+				<h3>Simpler Transformers</h3>
+				<p class="fragment">Modern Architectures (e.g. BERT, GPT2) are encoder-only architectures, thus they became much more simpler.</p>
+				<p class="fragment">In this presentation we will mostly focus on those architectures.</p>
+			</section>
+
+			<section data-auto-animate>
+				<h2 data-id='code-title'>Presentation outline</h2>
+				<ol>
+					<li class = "fragment">Self-Attention</li>
+					<li class = "fragment">Multi-Head Scaled Dot-Product Attention</li>
+					<li class = "fragment">Positional Embeddings/Encodings</li>
+					<li class = "fragment">Architecture examples</li>
+					<li class = "fragment">Vanilla Transformer - Decoder part</li>
+				</ol>
 			</section>
 
 			<section>
 				<section>	
 					<h3>Self-Attention - basic example</h3>
 					<p>
-						We are transforming input vectors $x_1, x_2,..., x_t$ into corrseponding  output vectors $y_1, y_2,..., y_t$.
-						Here $y_i$ is simply weighed avereage over all input vectors.
+						We are transforming input vectors $x_1, x_2,..., x_t$ into corrseponding  output vectors $y_1, y_2,..., y_t$. <br>
+						E.g. $y_i$ can be weighed avereage over all input vectors.
 					</p>
-					<div style="display: inline-grid; grid-template-columns: 65% 35%; margin-left: 0%; margin-right: 0%;">
+					<div style="display: inline-grid; grid-template-columns: 65% 35%; margin-left: 0%; margin-right: 0%;" class="fragment">
 						<div style="height: 120%; margin-right: 0%;">
 							<img src="assets/self-attention-idea.svg">
 						</div>
@@ -331,6 +321,63 @@ class Encoder(nn.Module):
 			</section>
 
 			<section>
+				<h2>Encoder-Only architectures</h2>
+				<p class="fragment"></p>
+			</section>
+
+			<section>
+				<h2>Simple sequence classification transformer</h2>
+				<img src="assets/classifier.svg">
+			</section>
+
+			<section>
+				<h3>Simple sequence classification transformer</h3>
+                <div style="width: 120%">
+                    <pre data-id="code-animation">
+                        <code class="python" data-trim data-line-numbers>
+class ClassificationTransformer(nn.Module):
+    def __init__(self, emb, heads, depth, max_seq_length, num_tokens, num_classes):
+        super().__init__()
+
+        self.num_tokens = num_tokens
+        self.token_emb = nn.Embedding(num_tokens, emb)
+        self.pos_emb = nn.Embedding(max_seq_length, emb)
+
+        # stacked transformer blocks
+        blocks = [Encoder(emb = emb, heads = heads) for _ in range(depth)]
+        self.blocks = nn.Sequential(*blocks)
+
+        # classification on top of transformer blocks
+        # (averaged transformer output sequence as input)
+        self.toprobs = nn.Linear(emb, num_classes)
+
+    def forward(self, x):
+        b, seq_length = x.shape
+
+        # using positional embedding
+        # easier to implement than positional encoding
+        positions = self.pos_emb(torch.arange(0, max_seq_length, device = 'cuda').expand(b, max_seq_length))
+        tokens = self.token_emb(x)
+
+        # entire forward pass with mean
+        # averaging the last output sequence
+        x = tokens + positions
+        x = self.blocks(x)
+        x = x.mean(dim=1)
+        x = self.toprobs(x)
+
+        return F.log_softmax(x, dim = 1)
+                        </code>
+                    </pre>
+                </div>
+			</section>
+			
+			<!--
+			<section>
+				<h2>Back to Vanilla Transformer for a second!</h2>
+			</section>
+
+			<section>
 				<h3>Decoder</h3>
 				<div style="display: inline-grid; grid-template-columns: 40% 60%;margin-left: 0%; margin-right: 0%;">
                     <div style="height: 100%; margin-bottom: 0%;">
@@ -338,15 +385,24 @@ class Encoder(nn.Module):
                     </div>
                     <div>
 						<ul>
-							<li class="fragment">Encoder (stack of N) maps the input sequence into a single latent vector.</li>
-							<li class="fragment">We use Masked Attention so we can only 'attend' to previous words.</li>
+							<li class="fragment">Encoder (stack of N) maps the input sequence into a single latent vector (memory).</li>
+							<li class="fragment">We use Masked Attention so we can only 'attend' to previous words in the output.</li>
 							<li class="fragment">In second attention we use Keys and Values from encoder, and Queries from decoder.</li>
 						</ul>
                     </div>
                 </div>
 			</section>
 
-			</div>
+
+			<section>
+				<h3>Masked Multi-Head Attention</h3>
+				<img src='assets/masking.png'>
+				<p>Before the softmax operation we set masked out elements to $-\text{inf}$.</p>
+				<p></p>
+			</section>
+			-->
+			
+		</div>
 	</div>
 	
 	<script src="plugin/math/math.js"></script>
