@@ -204,8 +204,16 @@ class SelfAttention(nn.Module):
 					<p>	
 						$$\text{MultiHead}(X) = \text{Concat}(\text{head}_1, \text{head}_2,..., \text{head}_h)W_o$$
 						$$\text{head}_i = Attention(Q^i, K^i, V^i) $$
-						$ Q^i = XW_q^i $ <br> $ K^i = XW_k^i $ <br> $ V^i = XW_v^i $
 					</p>
+					<div style="display: inline-grid; grid-template-columns: 65% 35%; margin-left: 0%; margin-right: 0%;">
+						<div>
+							<br>
+							$ Q^i = XW_q^i $ <br> $ K^i = XW_k^i $ <br> $ V^i = XW_v^i $
+						</div>
+						<div style="height: 100%; margin-right: 0%;">
+							<img src="assets/multi-head-attention.png">
+						</div>
+					</div>
 				</section>
 
 				<section>
@@ -320,8 +328,24 @@ class Encoder(nn.Module):
 						</code>
 					</pre>
 				</section>
-
 			</section>
+
+			<section>
+				<h3>Decoder</h3>
+				<div style="display: inline-grid; grid-template-columns: 40% 60%;margin-left: 0%; margin-right: 0%;">
+                    <div style="height: 100%; margin-bottom: 0%;">
+                        <img src="assets/vanilla_transformer.png">
+                    </div>
+                    <div>
+						<ul>
+							<li class="fragment">Encoder (stack of N) maps the input sequence into a single latent vector.</li>
+							<li class="fragment">We use Masked Attention so we can only 'attend' to previous words.</li>
+							<li class="fragment">In second attention we use Keys and Values from encoder, and Queries from decoder.</li>
+						</ul>
+                    </div>
+                </div>
+			</section>
+
 			</div>
 	</div>
 	
