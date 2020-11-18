@@ -112,9 +112,9 @@
 					</p>
 					<p class="fragment">
 						<ul>
-							<li class="fragment"> Query $q_i$ - compared to every other input vector (keys) to establish weights for output $y_i$</li>
+							<li class="fragment"> Query $q_i$ - compared to every other input vector (keys) to establish weights for its own output $y_i$</li>
 							<li class="fragment"> Key $k_i$ - compared to every other input vector (query) to establish weights for the other, $j$-th vector $y_j$</li>
-							<li class="fragment"> Value $v_i$ - used to produce the output vector by multiplying its weight (computed from keys and queries)</li>
+							<li class="fragment"> Value $v_i$ - part of the weighed sum to compute $y_i$, weights computed from keys and queries</li>
 						</ul>
 					</p>
 				</section>
@@ -205,7 +205,7 @@ class SelfAttention(nn.Module):
 						For input $x_i$, we produce different output vector $y_i^s$ for each head. 
 					</p>
 					<p class = "fragment" style="text-align: center">
-						We concatenate vectors $y_i^s$ and transform them linearly back to expected dimension.
+						We concatenate vectors $y_i^s$ and transform them linearly back to our expected dimension.
 					</p>
 				</section>
 
@@ -263,7 +263,7 @@ class MultiHeadSelfAttention(nn.Module):
 						Each layer in our model is permutation invariant (no recurrence, no convolution).
 						If we change the order of words in a sentence, we get the exact same output.
 					</p>
-					<p class="fragment">We want out model to make use of the order of the sequence.</p>
+					<p class="fragment">We want our model to make use of the order of the sequence.</p>
 				</section>
 
 				<section>
@@ -271,7 +271,7 @@ class MultiHeadSelfAttention(nn.Module):
 					<!-- <p>We simply embed the positions exactly the same way as words.</p> -->
 					<p class="fragment">
 						Just as we create (learnable) embeddings $v_{\text{cat}}, v_{\text{dog}}$ for words,
-						we also create embeddings $v_{1},...,v_{m}$ for each position in a sentence.
+						we also create embeddings $v_{1},...,v_{m}$ for each position in a sequence.
 					</p>
 					<br>
 					<p class="fragment">+ easy to implement, works well</p>
@@ -300,7 +300,7 @@ class MultiHeadSelfAttention(nn.Module):
 								<li class="fragment">Multi-Head Self-Attention</li>
 								<li class="fragment">Feed Forward layer - single FC NN applied independently to each vector</li>
 								<li class="fragment">Residual connections (added before normalization)</li>
-								<li class="fragment">Layer normalization layers</li>
+								<li class="fragment">Layer normalization</li>
 							</ul>
 						</div>
 						<div style="height: 80%; margin-right: 0%;">
@@ -342,7 +342,6 @@ class Encoder(nn.Module):
 
 			<section>
 				<h2>Encoder-Only architecture examples</h2>
-				<p class="fragment"></p>
 			</section>
 
 			<section>
