@@ -294,11 +294,11 @@ class MultiHeadSelfAttention(nn.Module):
 			<section>
 				<section>
 					<h3>Encoder Block</h3>
-					<div style="display: inline-grid; grid-template-columns: 60% 40%; margin-left: 0%; margin-right: 0%;">
+					<div style="display: inline-grid; grid-template-columns: 65% 35%; margin-left: 0%; margin-right: 0%;">
 						<div>
 							<ul><br>
 								<li class="fragment">Multi-Head Self-Attention</li>
-								<li class="fragment">Feed Forward layer - single FC NN applied independently to each vector</li>
+								<li class="fragment">FC Feed Forward - applied independently and identically to each vector. Two linear transformations with ReLU in between.</li>
 								<li class="fragment">Residual connections (added before normalization)</li>
 								<li class="fragment">Layer normalization</li>
 							</ul>
