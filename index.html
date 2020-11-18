@@ -108,15 +108,28 @@
 				<section>
 					<h3>Self-Attention - key, value, query</h3>
 					<p style="text-align: left">
-						From each input vector $x_i$ we derive three new vectors called $key, value$ and $query$. <br>					
+						From each input vector $x_i$ we derive three new vectors called $query, key$ and $value$ by linear transformation on $x_i$ <br>					
 					</p>
+					<p class="fragment">
+						<ul>
+							<li class="fragment"> Query $q_i$ - compared to every other input vector (keys) to establish weights for output $y_i$</li>
+							<li class="fragment"> Key $k_i$ - compared to every other input vector (query) to establish weights for the other, $j$-th vector $y_j$</li>
+							<li class="fragment"> Value $v_i$ - used to produce the output vector by multiplying its weight (computed from keys and queries)</li>
+						</ul>
+					</p>
+				</section>
+
+				<section>
+					<h3>Self-Attention - key, value, query</h3>
+					<br>
 					<div style="display: inline-grid; grid-template-columns: 60% 40%; margin-left: 0%; margin-right: 0%;">
 						<div style="height: 100%; margin-right: 0%;">
 							<img src="assets/key-query-value.svg">
 						</div>
 						<div>
+							<br>
 							$k_i = W_kx_i$ <br> $v_i = W_vx_i$ <br> $q_i = W_qx_i$ <br><br>
-							$y_i = \sum_{j} w_{ij}x_j$ <br><br>
+							$y_i = \sum_{j} w_{ij}v_j$ <br><br>
 							$w'_{ij} = q_{i}^{T}k_j$ <br>
 							$w_{ij} = \text{softmax}(w'_{ij})$
 						</div>
@@ -129,9 +142,11 @@
 						The next trick is to scale our dot product by $\frac{1}{\sqrt{d_k}}$, where $d_k$ is the length of 
 						our embedding vector. 
 					</p><br>
-					$y_i = \sum_{j} w_{ij}x_j$ <br>
-					$w'_{ij} = \frac{q_{i}^{T}k_j}{\sqrt{d_k}}$ <br>
-					$w_{ij} = \text{softmax}(w'_{ij})$
+					<p class="fragment">
+						$y_i = \sum_{j} w_{ij}v_j$ <br>
+						$w'_{ij} = \frac{q_{i}^{T}k_j}{\sqrt{d_k}}$ <br>
+						$w_{ij} = \text{softmax}(w'_{ij})$
+					</p>
 				</section>
 
 				<section>
