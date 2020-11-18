@@ -32,6 +32,8 @@
 				</ul>
 			</section>
 
+		<!-- Gonna skip those, no need 
+
 			<section>
 				<h3>The problem with RNNs (Recap)</h3>
 				<img src = "assets/recurrent-connection.svg" style="height: 10%;">
@@ -47,6 +49,8 @@
 				</ul>
 			</section>
 
+		-->
+
 			<section>
 				<h3>Vanilla Transformer - Quick Look</h3>
 				<div style="display: inline-grid; grid-template-columns: 40% 60%;margin-left: 0%; margin-right: 0%;">
@@ -55,6 +59,7 @@
 					</div>
 					<div>
 						<ul>
+							<br>
 							<li class = "fragment">Encoder - maps input sequence into a latent representation (memory) of the whole sequence.</li><br>
 							<li class = "fragment">Decoder - generates output based on memory and words already generated. </li>
 						</ul>
@@ -74,8 +79,8 @@
 					<li class = "fragment">Self-Attention</li>
 					<li class = "fragment">Multi-Head Scaled Dot-Product Attention</li>
 					<li class = "fragment">Positional Embeddings/Encodings</li>
+					<li class = "fragment">Encoder Block</li>
 					<li class = "fragment">Architecture examples</li>
-					<li class = "fragment">Vanilla Transformer - Decoder part</li>
 				</ol>
 			</section>
 
@@ -438,7 +443,8 @@ class ClassificationTransformer(nn.Module):
                 </ul>
             </section>
 			
-			<!--
+		<!-- Not finished, leaving decoder for the future presentation
+
 			<section>
 				<h2>Back to Vanilla Transformer for a second!</h2>
 			</section>
@@ -466,7 +472,8 @@ class ClassificationTransformer(nn.Module):
 				<p>Before the softmax operation we set masked out elements to $-\text{inf}$.</p>
 				<p></p>
 			</section>
-			-->
+			
+		-->
 			
 		</div>
 	</div>
