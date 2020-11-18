@@ -321,7 +321,7 @@ class Encoder(nn.Module):
 			</section>
 
 			<section>
-				<h2>Encoder-Only architectures</h2>
+				<h2>Encoder-Only architecture examples</h2>
 				<p class="fragment"></p>
 			</section>
 
@@ -370,7 +370,73 @@ class ClassificationTransformer(nn.Module):
                         </code>
                     </pre>
                 </div>
-			</section>
+            </section>
+            
+            <section>
+                <section>
+                    <h3>BERT</h3>
+                    <p class="fragment">BERT (largest) = stack of 24 encoder blocks with embedding dimension of 1024 and 16 attention heads.</p>
+                    <p class="fragment">It is pretrained on 800M words from English books and 2.5B words from wikipedia.</p>
+                    <p class="fragment">Pretraining is done with 2 tasks:</p>
+                    <ol>
+                        <li class="fragment">Masking</li>
+                        <li class="fragment">Next sentence classification</li>
+                    </ol>
+                </section>
+
+                <section>
+                    <h3>Masking</h3>
+                    <p class="fragment">We replace randomly 15% of words in the input sequence. The model is then asked to predict the masked words.</p>
+                    <p class="fragment">Masking procedure:</p>
+                    <ul>
+                        <li class="fragment">
+                            [MASK] token - 80% of time: <br>
+                            my dog is hairy -> my dog is [MASK]
+                        </li>
+                        <li class="fragment">
+                            Random token - 10% of time: <br>
+                            my dog is hairy -> mydog is apple
+                        </li>
+                        <li class="fragment">
+                            Unchanged token - 10% of time:
+                            my dog is hairy -> mydog is apple
+                        </li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Next sequence classification</h3>
+                    <p class="fragment">We sample 2 sequences from our corpus that either:</p>
+                    <ul>
+                        <li class="fragment">Follow each other directly</li>
+                        <li class="fragment">Are taken from random places</li>
+                    </ul>
+                    <p class="fragment">The model is then asked whick of those is the case.</p>
+                    <img class="fragment" src="assets/next-sequence-prediction.png" style="width: 60%">
+                </section>
+
+                <section>
+                    <img src="assets/bert-pretraining.png" style="width:80%">
+                </section>
+            </section>
+
+            <section>
+                <h1>The end!</h1>
+            </section>
+
+            <section>
+                <h3>References</h3>
+                <ul>
+                    <li>https://lilianweng.github.io/lil-log/2018/06/24/attention-attention.html</li>
+                    <li>https://www.youtube.com/watch?v=iDulhoQ2pro</li>
+                    <li>http://jalammar.github.io/illustrated-transformer/</li>
+                    <li>https://lionbridge.ai/articles/what-are-transformer-models-in-machine-learning/</li>
+                    <li>http://peterbloem.nl/blog/transformers</li>
+                    <li>https://arxiv.org/abs/1810.04805</li>
+                    <li>https://arxiv.org/abs/1706.03762</li>
+                    <li>https://github.com/BartWojtowicz/transformer-from-scratch</li>
+                </ul>
+            </section>
 			
 			<!--
 			<section>
